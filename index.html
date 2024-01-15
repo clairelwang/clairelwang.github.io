@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>GPA Wizard</title>
+    <h1>GPA Wizard<br> </h1>
+    <hr>
+
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="app.css">
+</head>
+<body>
+    <form>
+        <input type="text" id="userName" name="userName" placeholder="Ex: John" autocomplete="off">
+        <button type="button" onclick="submitName(event)" style="border-radius: 5px">next</button>
+    </form>
+    <div id="output"></div>
+    <table class="hidden" id="gradeTable">
+        <tr bigcolor="grey">
+            <th>Course Name</th>
+            <th>Semester 1 (1-100)</th>
+            <th>Semester 2 (1-100)</th>
+            <th>KAP/AP</th>
+            <th>Dual Credit</th>
+        </tr>
+        <tr>
+            <td><input type="text" id="course1" name="course1"></td>
+            <td><input type="number" id="g1" name="g1" min="0" max="100"></td>
+            <td><input type="number2" id="g2" name="g2" min="0" max="100"></td>
+            <td><input type="checkbox" id="check1" name="check1"></td>
+            <td><input type="checkbox" id ="check2" name="check2"></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <button type="button" onclick="addRow()">add row</button>
+        </tr>
+    </table>
+    <button type="button" onclick="calculate()">calculate</button>
+    <div id="credits">made by claire wang, grace han, vivian liu</div>
+</body>
+
+</html>

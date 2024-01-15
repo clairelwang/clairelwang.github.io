@@ -1,0 +1,70 @@
+h1{
+    color : navy;
+    margin: 10px;
+}
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+form {
+    margin-top: 50px; 
+}
+
+#userName {
+    width: 300px; 
+    font-size: 16px; 
+}
+
+#output {
+    margin-top: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+table {
+    margin: 0 auto; 
+}
+
+h1, button {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+#credits {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+}
+
+button[type="button"]{
+    width: 150px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+input{
+    width: 150px;
+    height: 40px;
+    font-size: 18px;
+    border-radius: 5px;
+}
+th{
+    color : navy;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#gradeTable input[type="text"]{
+    color : navy;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#gradeTable input[type="number"]{
+    
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+#gradeTable input[type="checkbox"]{
+    color : navy;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+
+}
