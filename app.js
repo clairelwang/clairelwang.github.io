@@ -100,7 +100,7 @@ function processUserData() {
             } else if (grade >= 69.5) {
                 sum1 += 3;
             }
-        } else if (courseType[i] == true) {
+        } else if (courseDual[i] == true) {
             if (grade >= 89.5) {
                 sum1 += 4.5;
             } else if (grade >= 79.5) {
@@ -137,7 +137,7 @@ function processUserData() {
             } else if (grade >= 69.5) {
                 sum2 += 3;
             }
-        } else if (courseType[i] == true) {
+        } else if (courseDual[i] == true) {
             if (grade >= 89.5) {
                 sum2 += 4.5;
             } else if (grade >= 79.5) {
