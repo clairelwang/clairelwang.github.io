@@ -1,20 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>GPA Wizard</title>
-    <h1>GPA Wizard<br> </h1>
-    <hr>
-
-    <script src="app.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Righteous&display=swap">
     <link rel="stylesheet" href="app.css">
+    <script src="app.js" defer></script>
+    <title>GPA Wizard</title>
 </head>
 <body>
+    <div id="help" class="help">
+        <div class="help-content">
+            <button class="popup-close-button" onclick="hidePopup()">X</button> 
+            <h1>How GPA Wizard Works</h1>
+            <h2>1. Enter your name.</h2>
+            <h2>2. Click the arrow button to move forward.</h2>
+            <h2>3. Each row is for a course.</h2>
+            <h2>4. You can skip entering the course name.</h2>
+            <h2>5. Put your grades for each semester.</h2>
+            <h2>6. Check the KAP/AP or dual credit boxes if needed.</h2>
+            <h2>7. Use the buttons to add or remove courses.</h2>
+            <h2>8. Click "Calculate" when all courses are entered.</h2>
+            <h2>9. Your GPA pops up.</h2>
+        </div>
+    </div>
+    <div class="logo-container">
+        <img src="logo.png" onclick="reloadPage()">
+    </div>
+    <div class="setting">
+        <img src="settings.png" alt="Settings" onclick="settings()">
+    </div>
+    <h1>GPA Wizard</h1>
+    <h2>Enter your name: </h2>
+    
     <form>
         <input type="text" id="userName" name="userName" placeholder="Ex: John" autocomplete="off">
-        <button type="button" onclick="submitName(event)" style="border-radius: 5px">next</button>
+        <button type="button" id="next" onclick="submitName(event)" style="border-radius: 10px">>></button>
     </form>
     <div id="output"></div>
+
     <table class="hidden" id="gradeTable">
         <tr bigcolor="grey">
             <th>Course Name</th>
@@ -23,21 +47,55 @@
             <th>KAP/AP</th>
             <th>Dual Credit</th>
         </tr>
-        <tr>
-            <td><input type="text" id="course1" name="course1"></td>
-            <td><input type="number" id="g1" name="g1" min="0" max="100"></td>
-            <td><input type="number2" id="g2" name="g2" min="0" max="100"></td>
-            <td><input type="checkbox" id="check1" name="check1"></td>
-            <td><input type="checkbox" id ="check2" name="check2"></td>
+        <!-- Default row -->
+        <tr id="defaultRow">
+            <td><input type="text" name="course1" autocomplete="off"> </td>
+            <td><input type="number" name="g1" min="0" max="100"></td>
+            <td><input type="number" name="g2" min="0" max="100"></td>
+            <td><input type="checkbox" name="kapApCheckbox"></td>
+            <td><input type="checkbox" name="dualCreditCheckbox"></td>
         </tr>
         <tr>
             <td></td>
             <td></td>
             <button type="button" onclick="addRow()">add row</button>
+            <button hidden="button1"></button>
+            <button type="button" onclick="removerow(document.getElementById('gradeTable'))">remove row</button>
         </tr>
     </table>
+    
     <button type="button" onclick="calculate()">calculate</button>
-    <div id="credits">made by claire wang, grace han, and vivian liu</div>
+    <button type="button" id="save" onclick="save()">save</button>    
+    <button type="button" onclick="toggleAudio()">audio</button> <!-- Button for text-to-speech -->
+    
+    <div id="credits">made by claire wang, grace han, & vivian liu</div>
 </body>
 
+    <script>
+        window.onload = function () {
+            loadInput();
+        };
+    
+        document.getElementById('gradeTable').addEventListener('change', function(event) {
+            // Check if the event target is a checkbox
+            if (event.target.type === 'checkbox') {
+                // Find the row that contains the changed checkbox
+                let row = event.target.closest('tr');
+                // If within a row, proceed
+                if (row) {
+                    // Get all checkboxes within the same row
+                    let checkboxesInRow = row.querySelectorAll('input[type="checkbox"]');
+                    // Uncheck all other checkboxes in the same row except for the current one
+                    checkboxesInRow.forEach(checkbox => {
+                        if (checkbox !== event.target) {
+                            checkbox.checked = false;
+                        }
+                    });
+                }
+            }
+        });
+    </script>
+    
+    
+</body>
 </html>
