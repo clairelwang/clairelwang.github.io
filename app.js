@@ -1,3 +1,4 @@
+// displays the help menu with the exit button
 function showPopup() {
     var popup = document.getElementById('help');
     popup.style.display = 'block';
@@ -13,15 +14,11 @@ function hidePopup() {
     var popup = document.getElementById('help');
     popup.style.display = 'none';
 }
-
+// refreshes the page to reset any modifications
 function setting() {
     window.location.reloadPage();
 }
-
-function reloadPage() {
-
-}
-
+// repeat
 function settings() {
     var tables = document.getElementsByTagName("table");
     for (var i = 0; i < tables.length; i++) {
@@ -35,9 +32,9 @@ function settings() {
         }
     }, 2000);
 }
-
+// checks validity of the input field; if invalid, a pop up appears prompting resubmission
+// when valid - retrieves name and stores; displays welcome; removes hidden
 function submitName(event) {
-    // validity
     var userName = document.getElementById("userName").value;
     if (!userName) {
         window.alert("Please submit your name!");
@@ -49,37 +46,31 @@ function submitName(event) {
     document.querySelector("table").classList.remove("hidden");
 }
 
-function loadInput() {
-    var data = JSON.parse(localStorage.getItem("inputData")) || [];
-    var table = document.getElementById("gradeTable").getElementsByTagName("tbody")[0];
-    data.forEach(function (item) {
-        var newRow = table.insertRow();
-        newRow.insertCell().innerHTML = '<input type="text" value="' + (item[0] || '') + '">';
-        newRow.insertCell().innerHTML = '<input type="number" value="' + (item[1] || '') + '">';
-        newRow.insertCell().innerHTML = '<input type="number" value="' + (item[2] || '') + '">';
-        newRow.insertCell().innerHTML = '<input type="checkbox" ' + (item[3] ? 'checked' : '') + '>';
-        newRow.insertCell().innerHTML = '<input type="checkbox" ' + (item[4] ? 'checked' : '') + '>';
-    });
-}
 
+// allows the addition of a new section with input fields. 
+// what if tool 
+// analyze 
 function addRow() {
     var table = document.querySelector("table");
-    var firstRow = table.rows[1];
-    var newRow = table.insertRow(firstRow.rowIndex + 1);
-    for (var i = 0; i < 5; i++) {
-        var cell = newRow.insertCell(i);
-        cell.innerHTML = '<input type="text">';
-        if (i === 1) {
-            cell.innerHTML = '<input type="number" min="0" max="100">';
-        } else if (i === 2) {
-            cell.innerHTML = '<input type="number" min="0" max="100" class="semester2">';
-        } else if (i === 3) {
-            cell.innerHTML = '<input type="checkbox">';
-        } else if (i === 4) {
-            cell.innerHTML = '<input type="checkbox" class="dualCredit">';
+    if (table) {
+        var lastRowIndex = table.rows.length;
+        var newRow = table.insertRow(lastRowIndex);
+
+        for (var i = 0; i < 5; i++) { // Changed starting index to 0
+            var cell = newRow.insertCell(i);
+            cell.innerHTML = '<input type="text">';
+            if (i === 1) { // Changed condition to match starting index
+                cell.innerHTML = '<input type="number" min="0" max="100">';
+            } else if (i === 2) { // Updated condition to 1
+                cell.innerHTML = '<input type="number" min="0" max="100" class="semester2">';
+            } else if (i === 3 || i === 4) { // Updated condition for checkboxes
+                cell.innerHTML = '<input type="checkbox">';
+            }
         }
+        document.getElementById('defaultRow').style.display = 'none';
+    } else {
+        console.error("Table not found");
     }
-    document.getElementById('defaultRow').style.display = 'none';
 }
 
 window.onload = function () {
@@ -91,32 +82,27 @@ window.onload = function () {
     }
 };
 
+// this deletes the last row from the table that the user no longer wants to use; updates
 function removerow(table) {
     var userName = document.getElementById("userName").value;
     if (!userName) {
         window.alert("Please submit your name!");
         return;
     }
-    var index = table.rows.length - 1;
     var rowCount = table.rows.length;
-    if (index > 2) {
-        table.deleteRow(rowCount - 1);
-        var data = JSON.parse(localStorage.getItem("inputData")) || [];
-        data.splice(-1, 1);
-        localStorage.setItem("inputData", JSON.stringify(data));
+    if (rowCount > 2) { // Ensure there are more than two rows (including the header row)
+        var index = table.rows.length - 1;
+        if (index > 1) { // Check if the row being deleted is not the first row
+            table.deleteRow(index);
+            var data = JSON.parse(localStorage.getItem("inputData")) || [];
+            data.splice(-1, 1);
+            localStorage.setItem("inputData", JSON.stringify(data));
+        } else {
+            alert("You cannot delete the titles.");
+        }
+    } else {
+        alert("You cannot delete the titles or the first row.");
     }
-
-}
-// repeat
-function showPopup() {
-    var popup = document.getElementById('help');
-    popup.style.display = 'block';
-
-    var closeButton = document.createElement('button');
-    closeButton.textContent = 'X';
-    closeButton.classList.add('popup-close-button');
-    closeButton.onclick = hidePopup;
-    popup.appendChild(closeButton);
 }
 
 function reloadPage() {
@@ -127,19 +113,22 @@ window.addEventListener('beforeunload', function () {
     save();
 });
 
-// securely stores;
+// initializes row data
+// loops through each row of the table; each row's input is saved securly. pushes row data into row data arra
+// once processed saves rowdata array into local storage a sa json string using localStorage
+// ensures preservation
 function save() {
     const table = document.getElementById("gradeTable");
     const rowsData = [];
-    for (let i = 1; i < table.rows.length - 1; i++) {
+    for (let i = 1; i < table.rows.length; i++) { 
         const row = table.rows[i];
         const rowData = [];
         const inputs = row.querySelectorAll("input");
         inputs.forEach(function (input) {
             if (input.type === "checkbox") {
-                rowData.push(input.checked);
+                rowData.push(input.checked); // correctly saves the checkbox state
             } else {
-                rowData.push(input.value);
+                rowData.push(input.value); // saves the value for other input types
             }
         });
         rowsData.push(rowData);
@@ -147,20 +136,53 @@ function save() {
     localStorage.setItem("inputData", JSON.stringify(rowsData));
 }
 
+// displays table with relevence; retreiving previously saved input from local storage
+// access previous 
+function loadInput() {
+    var data = JSON.parse(localStorage.getItem("inputData")) || [];
+    let ndata = [];
+    for(let i = 1; i < data.length; i++){
+        ndata.push(data[i]);
+    }data = ndata;
+   
+    var table = document.getElementById("gradeTable").getElementsByTagName("tbody")[0];
+
+    // Clear the table before loading saved rows
+    while (table.rows.length > 2) {
+        table.deleteRow(1);
+    }
+
+    // Insert saved rows
+    data.forEach(function (item) {
+        var newRow = table.insertRow();
+        newRow.insertCell().innerHTML = '<input type="text" value="' + (item[0] || '') + '">';
+        newRow.insertCell().innerHTML = '<input type="number" value="' + (item[1] || '') + '">';
+        newRow.insertCell().innerHTML = '<input type="number" value="' + (item[2] || '') + '">';
+        newRow.insertCell().innerHTML = '<input type="checkbox" ' + (item[3] ? 'checked' : '') + '>';
+        newRow.insertCell().innerHTML = '<input type="checkbox" ' + (item[4] ? 'checked' : '') + '>';
+    });
+}
+
 window.onload = function () {
-    loadInput();
+    var savedData = localStorage.getItem("inputData");
+    if (!savedData) {
+        document.getElementById('defaultRow').style.display = 'table-row';
+    } else {
+        loadInput();
+    }
+    //loadInput(); // Call loadInput here to ensure it's executed only once
 };
 
 window.addEventListener('beforeunload', function () {
     save();
 });
-
+// iterates through each row; checking input for each function and stores it to the corresponding variable
 function processUserData() {
     var userName = document.getElementById("userName").value;
     var courses = [];
 
     var table = document.getElementById("gradeTable");
-    for (var i = 1; i < table.rows.length - 1; i++) {
+    for (var i = 0; i < table.rows.length; i++) {
         var courseName = table.rows[i].cells[0].querySelector("input").value;
         var gradePercentage = table.rows[i].cells[1].querySelector("input").value;
         var sem2 = table.rows[i].cells[2].querySelector("#g2").value;
@@ -181,7 +203,7 @@ function processUserData() {
     console.log("Courses:", courses);
 }
 
-// what if 
+// initailizes arrays
 function calculate() {
     // check if name is submitted
     var userName = document.getElementById("userName").value;
@@ -193,27 +215,39 @@ function calculate() {
     var scores2 = [];
     var courseType = [];
     var courseDual = [];
-    var us1 = [];
-    var us2 = [];
 
     var table = document.getElementById("gradeTable");
 
-    for (var i = 1; i < table.rows.length - 1; i++) {
-        var courseName = table.rows[i].cells[0].querySelector("input").value;
-           var gradePercentage = table.rows[i].cells[1].querySelector("input").value;
-           var sem2 = table.rows[i].cells[2].querySelector("input").value;
-           var isKAPAP = table.rows[i].cells[3].querySelector("input").checked;
-           var isDual = table.rows[i].cells[4].querySelector("input").checked;
-
-        scores1.push(gradePercentage);
-        scores2.push(sem2);3
-        courseType.push(isKAPAP);
-        courseDual.push(isDual);
+    for (var i = 0; i < table.rows.length; i++) {
+        var row = table.rows[i];
+        var isEditing = row.classList.contains("editing");
+        var isSaving = row.classList.contains("saving");
+        
+        if (!isEditing && !isSaving) { // Exclude rows being edited or saved
+            console.log(row.cells[0].innerHTML)
+            var inputElement = row.cells[1].querySelector("input");
+            console.log(inputElement)
+            if (!inputElement) {
+                console.error("Input element not found in cell:", row.cells[0]);
+                continue; // skip to the next row if input element is not found
+            }
+            var gradePercentage1 = parseFloat(inputElement.value);
+            
+            var inputElement2 = row.cells[2].querySelector("input");
+            var gradePercentage2 = parseFloat(inputElement2.value);
+            var isKAPAP = row.cells[3].querySelector("input").checked;
+            var isDual = row.cells[4].querySelector("input").checked;
+    
+            scores1.push(gradePercentage1);
+            scores2.push(gradePercentage2);
+            courseType.push(isKAPAP);
+            courseDual.push(isDual);
+        }
     }
-    var numClasses = 0;
+    var numClasses = -1;
     var sum1 = 0;
     var us = 0;
-    for (var i = 0; i < scores1.length; i++) {
+    for (var i = 0; i <= scores1.length; i++) {
         var grade = scores1[i];
         numClasses++;
 
@@ -230,7 +264,7 @@ function calculate() {
                 sum1 += 3;
                 us+=2;
             }
-        } else if (courseType[i] == true) {
+        } else if (courseDual[i] == true) {
             if (grade >= 89.5) {
                 sum1 += 4.5;
                 us+=4;
@@ -256,11 +290,12 @@ function calculate() {
         }
     }
     var gpa1 = sum1 / numClasses;
+    console.log(gpa1);
     var un1 = us / numClasses;
     // semester 2
     var sum2 = 0;
     var us2 = 0;
-    for (var i = 0; i < scores2.length; i++) {
+    for (var i = 0; i <= scores2.length; i++) {
         var grade = scores2[i];
 
         //console.log(grade + " " + courseType[i]);
@@ -276,7 +311,7 @@ function calculate() {
                 sum2 += 3;
                 us2+=2;
             }
-        } else if (courseType[i] == true) {
+        } else if (courseDual[i] == true) {
             if (grade >= 89.5) {
                 sum2 += 4.5;
                 us2+=4;
@@ -305,9 +340,13 @@ function calculate() {
     }
     var un2 = us2 / numClasses;
     var gpa2 = sum2 / numClasses;
+
+    console.log("SUM 2 " + sum2);
+    console.log("SUM 1 " + sum1);
    
     window.alert(userName + ", your GPA is " + (gpa1+gpa2)/2 + "\n" + userName + ", your unweighted GPA is " + (un1+ un2)/2 );
 }
+    
     
     /*console.log(sum);
     console.log(numClasses);
@@ -315,21 +354,6 @@ function calculate() {
     console.log(courseType);
     console.log(gpa);*/
 
-
-// no print
-function printTable() {
-    var tableContents = document.getElementById("gradeTable").outerHTML;
-    var printWindow = window.open('', '_blank');
-
-    printWindow.document.write('<html><head><title>Print</title>');
-    printWindow.document.write('<link rel="stylesheet" href="app.css" type="text/css">');
-    printWindow.document.write('</head><body>');
-    printWindow.document.write(tableContents);
-    printWindow.document.write('</body></html>');
-
-    printWindow.print();
-    printWindow.close();
-}
 var currentlySpeaking = false; // Track if speech synthesis is currently active
 var utterance = null; // Track the current utterance
 
@@ -340,7 +364,9 @@ function toggleAudio() {
         readPageContent(); // Start speaking if not already speaking
     }
 }
-
+// iterates through each row and input
+// synthesized voice
+// accessible 
 function readPageContent() {
     var content = '';
 
@@ -374,7 +400,7 @@ function readPageContent() {
     // Start speaking
     synth.speak(utterance);
 }
-
+// halts the reading page content initiated by our previous function; allows users to control the audio playback
 function stopSpeaking() {
     window.speechSynthesis.cancel(); // Stop speech synthesis
     currentlySpeaking = false;
@@ -400,3 +426,4 @@ function stopSpeaking() {
     console.log(scores);
     console.log(courseType);
     console.log(gpa);*/
+
